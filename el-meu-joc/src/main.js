@@ -1,7 +1,7 @@
 import Phaser, { Physics } from "phaser";
 import './style.css';
-import dudeImg1 from "./assets/gemini1.png"
-import dudeImg2 from "./assets/gemini2.png"
+import dudeImg from "./assets/sprite_nino.png";
+//import dudeImg2 from "";
 
 
 const config = {
@@ -18,57 +18,53 @@ const config = {
   scene: {
     preload: preload,
     create: create,
-    update: update
+    update: update,
   }
 };
 
-
+var player;
+var stars;
+var cursors;
+var score = 0;
+var scoreText;
 
 function preload() {
-  this.load.spritesheet('dude1', 'dudeImg1', { frameWidth: 32, frameHeight: 48 });
+  this.load.spritesheet('dude', 'dudeImg', { 
+    frameWidth: 32, frameHeight: 48 });
 }
 
 function create() {
-  this.add.image(400, 300, 'dude1');
+  player = this.physics.add.sprite(100, 600, 'dude');
+  player.setCollideWorldBounds(true);
+  stars = this.physics.add.sprite(500, 600, 'dude');
+  stars.setCollideWorldBounds(true);
+  cursors = this.input.keyboard.createCursorKeys();
 
   this.anims.create({
     key: 'left',
-    frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+    frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 4 }),
     frameRate: 10,
     repeat: -1
   });
 
-  let cursors = this.input.keyboard
-    .createCursorKeys();
+  stars = this.physics.add.group({
+    key: 'star',
+    repeat: 5,
+    setXY: { x: 200, y: 0, stepX: 70 }
+  });
 
-    this.physics
-  .add.collider(player, platforms);
+  stars.children.iterate((child) => {
+    child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+  });
 
-this.physics.add
-  .overlap(player,
-    stars,
-    collect,
-    null,
-    this
-  );
-
-stars = this.physics.add.group({
-  key: 'star',
-  repeat: 11,
-  setXY: { x: 12, y: 0, stepX: 70 }
-});
-
-stars.children.iterate((child) => {
-  child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-});
-
-let scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000000' });
-
-function collect (player, star) {
-  star.disableBody(true, true);
-  score += 10;
-  scoreText.setText('Score: ' + score);
+  let scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#ffffff' });
 }
+
+  function collect (player, star) {
+    player.disableBody(true, true);
+    star.disableBody(true, true);
+    score += 10;
+    scoreText.setText('Score: ' + score);
 }
 
 function update() {
@@ -82,7 +78,9 @@ function update() {
   };
   if (cursors.up.isDown && player.body.touching.down) {
     player.setVelocityY(-330);
+    player.anims.play('up', true);
   };
 };
+
 
 const game = new Phaser.Game(config);
