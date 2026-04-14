@@ -6,3 +6,7 @@ body, html {
   justify-content: center;
   align-items: center;
 }
+
+#game-container {
+  background-color: rgb(34, 172, 0);
+}
