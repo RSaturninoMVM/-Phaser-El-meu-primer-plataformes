@@ -2,6 +2,7 @@ import Phaser, { Physics } from "phaser";
 import './style.css';
 import dudeImg from "./assets/sprite_nino.png";
 import dudeImg2 from "./assets/estrella.png";
+import dudeImg3 from "./assets/sprite_nino2.png";
 
 
 const config = {
@@ -11,7 +12,7 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      gravity: { y: 500 },
+      gravity: { y: 1000 },
       debug: false
     }
   },
@@ -39,8 +40,9 @@ function preload() {
 }
 
 function create() {
-  player = this.physics.add.sprite(100, 600, 'dude');
+  player = this.physics.add.sprite(50, 600, 'dude');
   player.setCollideWorldBounds(true);
+
 
   
   this.anims.create({
@@ -53,16 +55,16 @@ function create() {
   stars = this.physics.add.group({
     key: 'star',
     repeat: 5,
-    setXY: { x: 300, y: 0, stepX: 90 }
+    setXY: { x: 250, y: 0, stepX: 100 }
   });
 
   stars.children.iterate((child) => {
-    child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.6));
+    child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.7));
     child.setCollideWorldBounds(true);
     child.setScale(0.6);
   });
 
-  scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#ffffff' });
+  scoreText = this.add.text(32, 32, 'Euros: 0', { fontSize: '32px', fill: '#ffffff' });
   cursors = this.input.keyboard.createCursorKeys();
 
   this.physics.add.overlap(stars, player, collect, null, this);
@@ -80,16 +82,15 @@ function update() {
   };
   
   if (cursors.up.isDown && (player.body.touching.down || player.body.blocked.down))  {
-    player.setVelocityY(-330);
+    player.setVelocityY(-500);
   }
 };
 
 function collect (player, star) {
   star.disableBody(true, true);
-  score += 11.166666666666666666666666666666666666667;
-  scoreText.setText('Score: ' + score);
+  score += 1;
+  scoreText.setText('Monedas: ' + score);
 }
-
 
 
 const game = new Phaser.Game(config);
